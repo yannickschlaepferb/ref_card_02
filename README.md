@@ -42,7 +42,7 @@ Die App kann nun im Browser unter der URL http://localhost:3000 betrachtet werde
 
 
 ### Inbetriebnahme mit Docker Container
-folgt...
+folgt....
 
 
 
