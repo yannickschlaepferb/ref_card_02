@@ -6,6 +6,9 @@ jobs:
   push_to_registry:
     name: Push Docker image to Github Container Registry
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v2
       - name: Login to Github Container Registry
