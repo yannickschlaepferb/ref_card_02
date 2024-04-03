@@ -1,23 +1,32 @@
-name: Publish Docker image to Github Container Registry
+name: Publish docker image 
 
 on: push
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Github Container Registry
+    name: Push Docker image
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@v2
-      - name: Login to Github Container Registry
+      - name: Login ghcr
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Docker image
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build/Push to ghcr
         run: |
           docker build . --tag ghcr.io/yannickschlaepferb/ref_card_02:latest
           docker push ghcr.io/yannickschlaepferb/ref_card_02:latest
+
+      - name: Login to AWS ECR
+        run: |
+          echo "${{ secrets.AWS_PASSWORD }}" | docker login --username AWS --password-stdin 677318853776.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com  
+
+      - name: Build/Tag
+        run: |
+          docker tag ghcr.io/yannickschlaepferb/ref_card_02:latest 677318853776.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/refcard02:latest
+          docker push 677318853776.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/refcard02:latest
